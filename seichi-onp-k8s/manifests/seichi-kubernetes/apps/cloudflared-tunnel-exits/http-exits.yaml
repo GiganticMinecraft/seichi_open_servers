@@ -95,10 +95,10 @@ spec:
             external-hostname: phpmyadmin.onp-k8s.admin.seichi.click
             internal-authority: "phpmyadmin.seichi-minecraft:80"
 
-          # Argo Workflows に対する POST リクエストのみを受け付けるためのリバースプロキシ。
-          - name: argo-wf-proxy
-            external-hostname: argo-wf-webhook.onp-k8s.admin.seichi.click
-            internal-authority: "argo-wf-proxy.argo:80"
+          # SeichiAssist Distributor の Argo Events Webhook に対する POST リクエストのみを受け付けるためのリバースプロキシ。
+          - name: seichiassist-dist-proxy
+            external-hostname: seichiassist-dist.onp-k8s.admin.seichi.click
+            internal-authority: "seichiassist-dist-proxy.seichi-minecraft:80"
 
           # k8s 上の Backstage
           - name: backstage

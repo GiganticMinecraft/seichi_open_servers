@@ -3,8 +3,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: argo-wf-proxy
-  namespace: argo
+  name: seichiassist-dist-proxy
+  namespace: seichi-minecraft
 spec:
   type: ClusterIP
   ports:
@@ -13,24 +13,22 @@ spec:
       protocol: TCP
       targetPort: 80
   selector:
-    app: argo-wf-proxy
+    app: seichiassist-dist-proxy
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  # 本来は argo-workflow-reverse-proxy という名前にしたいが、
-  # そうすると53文字を超えてしまい、エラーが発生するのでやむを得ず短縮している。
-  name: argo-wf-proxy
-  namespace: argo
+  name: seichiassist-dist-proxy
+  namespace: seichi-minecraft
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: argo-wf-proxy
+      app: seichiassist-dist-proxy
   template:
     metadata:
       labels:
-        app: argo-wf-proxy
+        app: seichiassist-dist-proxy
     spec:
       containers:
         - name: nginx
@@ -42,25 +40,25 @@ spec:
       volumes:
         - name: conf
           configMap:
-            name: argo-wf-proxy-config-map
+            name: seichiassist-dist-proxy-cm
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: argo-wf-proxy-config-map
-  namespace: argo
+  name: seichiassist-dist-proxy-cm
+  namespace: seichi-minecraft
 data:
   proxy.conf: |
     server_names_hash_bucket_size 128;
 
     server {
       listen 80;
-      server_name argo-wf-webhook.onp-k8s.admin.seichi.click;
+      server_name seichiassist-dist.onp-k8s.admin.seichi.click;
       location / {
         limit_except POST {
           deny all;
         }
-        proxy_pass http://argo-workflows-webhook-service:12000;
+        proxy_pass http://seichiassist-distributor-service:12000;
         proxy_request_buffering off;
       }
     }
